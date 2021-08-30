@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Euler</title>
+    <link rel="stylesheet" href="euler_style.css">
+    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+
+    <div class="content">
+      <div class="heading">
+        <div>
+          <img class='euler-icon' src='euler-face.jpg'/>
+          <span id="euler-popup"><b>Well done!</b><br>You've clicked Euler 10 times!</span>
+        </div>
+        <div>
+          <h1 id="euler-title" onclick="changeEuler()">Euler the Ruler!</h1>
+          <h3>A Eulerian graph tool</h3>
+        </div>
+      </div>
+
+      <div class="info">
+        <p>
+          A <a href="https://en.wikipedia.org/wiki/Eulerian_path" target="_blank">Euler Path</a> is a path that goes through every edge of a graph exactly once.<br>
+          A Euler Circuit is a Euler Path that begins and ends at the same vertex.
+        </p>
+
+        <p style='margin-bottom: 5px'>
+          Euler’s Theorem:
+        </p>
+        <ol>
+          <li>If a graph has more than 2 vertices of odd degree then it has no Euler paths</li>
+          <li>If a graph is connected and has 0 or exactly 2 vertices of odd degree, then it has at least
+          one Euler path</li> 
+          <li>If a graph is connected and has 0 vertices of odd degree, then it has at least one Euler
+          circuit</li>
+        </ol>
+      </div>
+
+      <p>Input edges in this format: <strong>[b,f],[c,d],[c,e],[f,e],[b,d]</strong> (one character per vertex)</p>
+      <!-- <p> Input Exluded chars in format: <strong>["[", "]", ","]</p> -->
+
+      <div class="inputDiv">
+        <!-- <label for="edges">Edges:</label> -->
+        <input type="text" id="edges" name="edges" value="[b,f],[c,d],[c,e],[f,e],[b,d]" placeholder="Input edges here...">
+        <!-- <label for="excluded_chars">Excluded Characters:</label> -->
+        <!-- <input type="text" id="excluded_chars" name="excluded_chars" value='"[", "]", ","'><br><br> -->
+        <!-- Rounded switch -->
+        <div id="directedDiv">
+          <span id="directedDiv-text">Undirected</span>
+        <label class="switch">
+          <input type="checkbox" id="directed-checkbox">
+          <span class="slider round"></span>
+        </label>
+        </div>
+        <div class="btn" id='btn' onclick="calculateBtn()">Calculate</div>
+      </div>
+
+      <div id="result_div"> &nbsp;</div>
+      <div id="cy"></div>
+        
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js" integrity="sha512-REr7ZKldLo2Lx6UiQ6autPWZR+j4u1/7ElYsrcwFe3ZmT/TKXCF/vXqNP/d2BQ78k0tapdZFccpFkku9bwrS3w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="euler.js"></script>
+  </body>
+</html>
