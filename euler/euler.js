@@ -43,10 +43,15 @@ function calculateEuler(edges, excluded_chars) {
     var ch, index, len, count, result;
     var vertexCount = 0;
 
-    // loop through each character in the edges string
+    console.log(edges.length)
+    if (edges.trim() == "") {
+        return "Undefined"
+    }
     if (edges.length == 0) {
         return "Null";
     }
+
+    // loop through each character in the edges string
     for (index = 0, len = edges.length; index < len; ++index) {
         ch = edges.charAt(index);
         let excluded = false;
@@ -106,8 +111,12 @@ function calculateBtn() {
 
     let inputTextBox = document.getElementById("edges");
     let edges = inputTextBox.value;
+    //remove line breaks and spaces
+    console.log('edges before: ' + edges)
+    edges = edges.replace(/\r?\n|\r/g, '').trim();
+    console.log('edges after: ' + edges)
     // let excluded_chars = document.getElementById("excluded_chars").value;
-    let excluded_chars = ["[", "]", ","];
+    let excluded_chars = ["[", "]", ",", "{", "}", "(", ")", " "];
 
     result_div = document.getElementById("result_div");
     result_div.style.opacity = '1';
@@ -128,16 +137,20 @@ function calculateBtn() {
         let node2 = edgesForCy.charAt(i+1)
 
         cy.add([
-            { group: 'nodes', data: { id: node1 } },
-            { group: 'nodes', data: { id: node2 } },
-            { group: 'edges', data: { id: 'e'+edgeCount , source: node1, target: node2 } },
+            { group: 'nodes', data: { id: node1 }, position: { x: -50, y: -50 } },
         ]);
+        if (node2 != '') {
+            cy.add([
+                { group: 'nodes', data: { id: node2 }, position: { x: -50, y: -50 } },
+                { group: 'edges', data: { id: 'e'+edgeCount , source: node1, target: node2 } },
+            ])
+        }
 
         edgeCount++;
     }
 
     // start cy
-    var layout = cy.layout({ name: 'circle' });
+    var layout = cy.layout({ name: 'cose' });
     layout.run(); 
 
     if (!calculation.includes('Invalid')) {
@@ -155,6 +168,7 @@ function calculateBtn() {
 
         var nodesInTheGraph = cy.elements('node');
 
+        console.log(calculation)
         if (nodesInTheGraph.length != visitedNodes) {
             calculation = 'Invalid - This graph is not connected';
         }
@@ -188,14 +202,15 @@ var dispatchForCode = function(event, callback) {
 };
 document.getElementById("edges")
     .addEventListener("keydown", function(event) {
-        if (event.keyCode === 13) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault();
             document.getElementById("btn").classList.add('active');
         }
 });
 document.getElementById("edges")
     .addEventListener("keyup", function(event) {
     event.preventDefault();
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 && !event.shiftKey) {
         var btn = document.getElementById("btn");
         btn.click();
         btn.classList.remove('active');
