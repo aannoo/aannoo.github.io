@@ -1,3 +1,13 @@
+// cytoscape.js notice:
+// Copyright (c) 2016-2021, The Cytoscape Consortium.
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 function initCy(isDirected) {
     if (isDirected) {
         var arrowShape = 'triangle'
@@ -43,12 +53,8 @@ function calculateEuler(edges, excluded_chars) {
     var ch, index, len, count, result;
     var vertexCount = 0;
 
-    console.log(edges.length)
-    if (edges.trim() == "") {
-        return "Undefined"
-    }
-    if (edges.length == 0) {
-        return "Null";
+    if (edges == null) {
+        return "Undefined";
     }
 
     // loop through each character in the edges string
@@ -100,7 +106,9 @@ function calculateEuler(edges, excluded_chars) {
 
 
 function calculateBtn() {
-    // nitilise and reset cy
+    document.getElementById("btn").style.pointerEvents = 'none';
+
+    // initilise and reset cy
     var isDirected = document.getElementById('directed-checkbox').checked;
     var cy = initCy(isDirected);
     var collection = cy.elements('node');
@@ -150,7 +158,19 @@ function calculateBtn() {
     }
 
     // start cy
-    var layout = cy.layout({ name: 'cose' });
+    var layout = 'cose';
+    if (edges.length > 500) {
+        layout = 'circle';
+    }
+    if (edges.length > 5000) {
+        bigComputer = confirm('That graph is massive! Are you on a big computer? (this alert makes no difference as code will run anyway)');
+        if (bigComputer) {
+            calculation = calculation + " - AND you're on a big computer! Nice!"
+        } else {
+            calculation = calculation + " - BUT you're on a small computer! Loser!"
+        }
+    }
+    var layout = cy.layout({ name: layout });
     layout.run(); 
 
     if (!calculation.includes('Invalid')) {
@@ -168,7 +188,7 @@ function calculateBtn() {
 
         var nodesInTheGraph = cy.elements('node');
 
-        console.log(calculation)
+        console.log(calculation);
         if (nodesInTheGraph.length != visitedNodes) {
             calculation = 'Invalid - This graph is not connected';
         }
@@ -178,7 +198,7 @@ function calculateBtn() {
     // display result
     resultClass = 'validResult'
     if (calculation.includes('Invalid')) {
-        resultClass = 'invalidResult'
+        resultClass = 'invalidResult';
     }
     result_div.innerHTML = '<b>Result: </b>' + calculation;
     result_div.classList.add(resultClass);
@@ -186,20 +206,10 @@ function calculateBtn() {
         result_div.classList.remove(resultClass);
     }, 1000);
 
+    document.getElementById("btn").style.pointerEvents = 'auto';
 }
 
 // pressing enter on input textbox
-var dispatchForCode = function(event, callback) {
-    var code;
-    if (event.key !== undefined) {
-        code = event.key;
-    } else if (event.keyIdentifier !== undefined) {
-        code = event.keyIdentifier;
-    } else if (event.keyCode !== undefined) {
-        code = event.keyCode;
-    }
-    callback(code);
-};
 document.getElementById("edges")
     .addEventListener("keydown", function(event) {
         if (event.keyCode === 13 && !event.shiftKey) {
@@ -259,7 +269,12 @@ document.getElementById('info-arrow').addEventListener("click", function() {
 
 
 // euler heading text
-var eulerCount = 0;
+var oiler = false;
+function setOiler() {
+    oiler = true;
+    document.getElementById('euler-title').innerHTML = oilers[0];
+    document.getElementById('euler-popup').style.display = 'none';
+}
 const eulers = [
     'Euler the Ruler!', 
     'Euler drinks wine coolers!', 
@@ -276,12 +291,34 @@ const eulers = [
     'Euler the Pooler! <span style="font-size:12px"> (He likes swimming)</span>',
     'Euler the <a target="_blank" href="https://en.wikipedia.org/wiki/Ilya_Naishuller">Ilya Naishuller</a>!'
 ];
+const oilers = [
+    'Euler the oiler!',
+    'Euler the soil(er)',
+    'Euler the broiler!',
+    'Euler the toiler!',
+    'Euler the recoiler!',
+    'Euler the double boiler!',
+    'Euler the <a target="_blank" href="https://www.dictionary.com/browse/despoiler">despoiler</a>!',
+    'Euler is in turmoil(er)',
+    'Euler gives away all the spoiler(s)',
+    'Euler the pan-broiler!',
+    "Euler doesn't have the lastname Boyle(r)",
+    "Euler likes to spoil her! <span style='font-size:12px'>(<i>her</i> reffering to Euler's significant other)</span>",
+];
+var eulerCount = 0;
 function changeEuler() {
     eulerTitle = document.getElementById('euler-title');
     prevEuler = eulerTitle.innerHTML;
-    var euler = eulers[Math.floor(Math.random()*eulers.length)];
-    while (prevEuler == euler) {
+    if (oiler) {
+        var euler = oilers[Math.floor(Math.random()*oilers.length)];
+        while (prevEuler == euler) {
+            var euler = oilers[Math.floor(Math.random()*oilers.length)];
+        }
+    } else {
         var euler = eulers[Math.floor(Math.random()*eulers.length)];
+        while (prevEuler == euler) {
+            var euler = eulers[Math.floor(Math.random()*eulers.length)];
+        }
     }
 
     eulerTitle.innerHTML = euler;
@@ -291,10 +328,10 @@ function changeEuler() {
         eulerPopup.style.display = 'block';
         setTimeout(function(){
             eulerPopup.style.opacity = '0';
-        }, 7000);
+        }, 8000);
         setTimeout(function(){
             eulerPopup.style.display = 'none';
-        }, 7400);
+        }, 8400);
     }
     eulerCount++;
 }
