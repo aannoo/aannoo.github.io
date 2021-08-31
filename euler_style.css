@@ -5,11 +5,6 @@ html {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
-
-    /* position: relative; */
-    /* overflow: hidden; */
-    -webkit-transform: translate3d(0,0,0);
-
 }
 
 html:before {
@@ -44,14 +39,17 @@ a {
     margin-top: 0;
 }
 
-#euler-title {
-    cursor: pointer;
+.cursorPointerText {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -khtml-user-select: none; /* Konqueror HTML */
     -moz-user-select: none; /* Old versions of Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none;
+    cursor: pointer;
+}
+
+#euler-title {
     margin-bottom: 0;
     line-height: 1;
 }
@@ -69,17 +67,18 @@ a {
 
 #euler-popup {
     position: absolute;
-    top: 100px;
+    top: 90px;
     left: 0;
     padding: 10px;
     background-color: #306ca8;
     border-radius: 3px;
     border: 1px solid #4194e7;
-    width: 130px;
-    height: 70px;
+    width: 200px;
+    height: 110px;
     display: none;
-    opacity: 0;
-    transition: opacity 0.2s;
+    opacity: 1;
+    transition: opacity 0.4s;
+    z-index: 10;
 }
 
 .content {
@@ -88,7 +87,7 @@ a {
     margin: 0 auto;
     width: 750px;
     max-width: 100%;
-    padding: 5px 20px 25px;
+    padding: 25px 25px;
     color: rgb(215, 215, 215);
     border: 1px solid rgb(118, 118, 118);
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
@@ -103,15 +102,10 @@ a {
     border: 0;
     border-radius: 2px;
     text-decoration: none;
-    cursor: pointer;
     display:flex;
     align-items: center;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Old versions of Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none;
+    flex-grow: 1;
+    justify-content: center;
 }
 /* .btn:hover {
     background-color: #306ca8;
@@ -168,9 +162,6 @@ a {
     background-color: rgb(62, 62, 62);;
     -webkit-transition: .2s;
     transition: .2s;
-    /* border-radius: 3px; */
-    /* border-top-left-radius: 2px; */
-    /* border-top-right-radius: 2px; */
   }
   
   .slider:before {
@@ -202,29 +193,22 @@ a {
 #result_div {
     font-size: 17px;
     opacity:0;
-    transition: opacity 0.3s;
+    transition: opacity 0.2s, margin 0.2s, border-color 0.2s;
     background-color: rgba(0, 0, 0, 0.3);
     border: 1px solid rgb(155, 155, 155);
     padding: 5px 10px;
     border-radius: 2px;
-    transition: margin 0.2s;
-    transition: border-color 0.2s;
     font-family:'Courier New', Courier, monospace;
 }
 .invalidResult {
     border-color: red !important;
-    /* transition: border-color 0.05s !important; */
 }
 .validResult {
     border-color: green !important;
-    /* transition: border-color 0.05s !important; */
 }
 
 .inputDiv {
     display: flex;
-    align-content: stretch;
-    justify-content: flex-start;
-    align-items: stretch;
     gap: 10px;
     flex-wrap: wrap;
     background-color: rgba(0, 0, 0, 0.151);
@@ -237,9 +221,9 @@ a {
     height: 280px;
     border: 1px solid rgb(155, 155, 155);
     border-radius: 3px;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, height 0.2s;
     background-color: rgba(255, 255, 255, 0.1);
-    transition: height 0.2s;
+    max-width: calc(100vw - 30px);
 }
 
 input#edges {
@@ -249,31 +233,114 @@ input#edges {
     border-radius: 2px;
     padding: 6px;
     font-family:'Courier New', Courier, monospace;
-    flex-grow: 1;
+    flex-grow: 2;
     min-width: 50px;
+    width: 400px;
 }
 input#edges:focus {
     box-shadow: none;
-    /* outline: 1px solid #265483; */
-    /* border: 1px solid #265483; */
     background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* label {
-    font-size: 20px;
-    padding: 6px 0 6px 6px;
-    margin: 0;
-    background-color: rgba(128, 128, 128, 0.01);
-    border-radius: 2px;
-} */
-
 ol {
-    margin-top:5px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgb(97, 97, 97);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-inline-start: 30px;
 }
 
-.info {
-    /* background-color: rgba(255, 255, 255, 0.1); */
-    /* padding: 10px; */
+#info-arrow {
+    margin-top: 1em;
+    margin-right: 10px;
+    position: relative;
+    height: 20px;
+}
+#info-arrow:active {
+    color: rgb(172, 172, 172);
+}
+#info-arrow-text {
+    position: absolute;
+    top: 0;
+    left: 25px;
+    width: 250px;
+    max-width: calc(100vw - 40px);
+    transition: opacity 0.4s;
+}
+
+#info-container {
+    display: flex;
+}
+
+#info {
+    display: inline-block;
+    transition: max-height 0.4s;
+    overflow: hidden;
+}
+
+#arrow {
+    width: 0; 
+    height: 0; 
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-left: 9px solid rgb(215, 215, 215);
+}
+#info-arrow:active #arrow {
+    border-left-color: rgb(172, 172, 172);
+}
+.arrow-down {
+    margin-top: 6px;
+    margin-left: -3px;
+    border-bottom: none !important;
+    border-left: 9px solid transparent !important;
+    border-right: 9px solid transparent !important;
+    border-top: 9px solid rgb(215, 215, 215) !important;
+}
+#info-arrow:active .arrow-down {
+    border-top-color: rgb(172, 172, 172) !important;
+}
+
+.input-directions {
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid rgb(97, 97, 97);
+}
+
+@media only screen and (max-width: 810px) {
+    #cy {
+        width: calc(100vw - 80px);
+        margin: 0 auto;
+    }
+}
+@media only screen and (max-width: 500px) {
+    .content {
+        margin: 0;
+        border-radius: 0;
+        border: 0;
+        padding: 15px;
+        padding-top: 20px;
+        box-shadow: none;
+        min-height: calc(100vh - 35px);
+    }
+    body {
+        margin: 0;
+    }
+    p, li {
+        font-size:12px;
+    }
+    #cy {
+        width: calc(100vw - 30px);
+        margin: 0 auto;
+    }
+    input#edges {
+        width: calc(100% - 10px);
+        font-size: 15px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    h3 {
+        font-size: 1em;
+    }
+    #result_div {
+        font-size: 13px;
+    }
 }

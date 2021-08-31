@@ -1,5 +1,5 @@
-function initCy(directed) {
-    if (directed) {
+function initCy(isDirected) {
+    if (isDirected) {
         var arrowShape = 'triangle'
     } else {
         var arrowshape = 'none'
@@ -29,11 +29,7 @@ function initCy(directed) {
         ],
         layout: {
             name: 'circle',
-            rows: 1,
-            animate: true,
-            // userZoomingEnabled =false,
-
-        }
+            rows: 1,        }
     });
     return cy;
 }
@@ -99,68 +95,54 @@ function calculateEuler(edges, excluded_chars) {
 
 
 function calculateBtn() {
-    let checked = document.getElementById('directed-checkbox').checked;
-    console.log(checked);
-
-    if (checked) {
-        var cy = initCy(true);
-        var isDirected = true;
-    } else {
-        var cy = initCy(false);
-        var isDirected = false;
-    }
-
+    // nitilise and reset cy
+    var isDirected = document.getElementById('directed-checkbox').checked;
+    var cy = initCy(isDirected);
     var collection = cy.elements('node');
     cy.remove( collection );
 
+    // variables and styles
     document.getElementById('cy').style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
-    document.getElementById('cy').style.height = '300px';
 
     let inputTextBox = document.getElementById("edges");
-    inputTextBox.style.border = 'none';
     let edges = inputTextBox.value;
     // let excluded_chars = document.getElementById("excluded_chars").value;
-
     let excluded_chars = ["[", "]", ","];
 
     result_div = document.getElementById("result_div");
     result_div.style.opacity = '1';
     result_div.style.margin = '15px 0 10px';
-    var calculation = calculateEuler(edges, excluded_chars);
-    if (calculation == "Invalid") {
-        // inputTextBox.style.border = '1px solid red';
-        // inputTextBox.setCustomValidity("Invalid field.");
-    }
-    
 
+    // start calculation
+    var calculation = calculateEuler(edges, excluded_chars);
+
+    // input data into cy
     edgesForCy = edges;
     for (i=0;i<excluded_chars.length;i++) {
         edgesForCy = edgesForCy.replaceAll(excluded_chars[i], "");
     }
 
-    // nodesInTheGraph = 0;
     edgeCount = 0;
     for (i=0;i<edgesForCy.length;i=i+2) {
         let node1 = edgesForCy.charAt(i);
         let node2 = edgesForCy.charAt(i+1)
-        // console.log(c + " " + edgesForCy.charAt(i) + edgesForCy.charAt(i+1))
-        // nodesInTheGraph = nodesInTheGraph + 2;
-        edgeCount++;
 
-        var eles = cy.add([
+        cy.add([
             { group: 'nodes', data: { id: node1 } },
             { group: 'nodes', data: { id: node2 } },
             { group: 'edges', data: { id: 'e'+edgeCount , source: node1, target: node2 } },
         ]);
+
+        edgeCount++;
     }
 
-
+    // start cy
     var layout = cy.layout({ name: 'circle' });
     layout.run(); 
 
     if (!calculation.includes('Invalid')) {
 
-        //check if graph is connected with a BFS from one node
+        //check if graph is connected with a BFS from a node
         var visitedNodes = 0;
         var bfs = cy.elements().bfs({
             roots: cy.nodes()[0],
@@ -172,18 +154,14 @@ function calculateBtn() {
         });
 
         var nodesInTheGraph = cy.elements('node');
-        console.log('nodesInTheGraph ' + nodesInTheGraph.length);
-        console.log('visitedNodes ' + visitedNodes);
 
         if (nodesInTheGraph.length != visitedNodes) {
             calculation = 'Invalid - This graph is not connected';
-            console.log('NOT connected');
-        } else {
-            console.log('connected');
         }
 
     }
 
+    // display result
     resultClass = 'validResult'
     if (calculation.includes('Invalid')) {
         resultClass = 'invalidResult'
@@ -196,7 +174,7 @@ function calculateBtn() {
 
 }
 
-// code for pressing enter on input
+// pressing enter on input textbox
 var dispatchForCode = function(event, callback) {
     var code;
     if (event.key !== undefined) {
@@ -210,7 +188,6 @@ var dispatchForCode = function(event, callback) {
 };
 document.getElementById("edges")
     .addEventListener("keydown", function(event) {
-        // event.preventDefault();
         if (event.keyCode === 13) {
             document.getElementById("btn").classList.add('active');
         }
@@ -226,6 +203,7 @@ document.getElementById("edges")
 });
 
 
+// directed checkbox
 document.getElementById('directedDiv').addEventListener("click", function() {
     var checkbox = document.getElementById('directed-checkbox');
     var text = document.getElementById('directedDiv-text');
@@ -242,6 +220,30 @@ document.getElementById('directedDiv').addEventListener("click", function() {
     }
 });
 
+
+// info accordian
+document.getElementById('info-arrow').addEventListener("click", function() {
+    info = document.getElementById('info');
+    infoArrowText = document.getElementById('info-arrow-text');
+    infoArrow = document.getElementById('arrow');
+    if (info.style.maxHeight == '0px') {
+        info.style.maxHeight = '400px';
+        infoArrowText.style.opacity = '0';
+        infoArrowText.style.display = 'none';
+        infoArrow.classList.add('arrow-down');
+    } else {
+        info.style.maxHeight = '0px';
+        infoArrowText.style.display = 'inline-block';
+        setTimeout(function(){
+            infoArrowText.style.opacity = '1';
+            infoArrow.classList.remove('arrow-down');
+        }, 200);
+    }
+    
+});
+
+
+// euler heading text
 var eulerCount = 0;
 const eulers = [
     'Euler the Ruler!', 
@@ -255,27 +257,29 @@ const eulers = [
     'Euler the Carpooler!',
     'Euler the Overruler!',
     'Euler the Homeschooler!',
+    'Euler the Tool(er)',
     'Euler the Pooler! <span style="font-size:12px"> (He likes swimming)</span>',
     'Euler the <a target="_blank" href="https://en.wikipedia.org/wiki/Ilya_Naishuller">Ilya Naishuller</a>!'
 ];
 function changeEuler() {
-
+    eulerTitle = document.getElementById('euler-title');
+    prevEuler = eulerTitle.innerHTML;
     var euler = eulers[Math.floor(Math.random()*eulers.length)];
+    while (prevEuler == euler) {
+        var euler = eulers[Math.floor(Math.random()*eulers.length)];
+    }
 
-    document.getElementById('euler-title').innerHTML = euler;
+    eulerTitle.innerHTML = euler;
     eulerPopup = document.getElementById('euler-popup');
 
-    if (eulerCount == 10) {
-        eulerPopup.style = 'display: block';
-        setTimeout(function(){
-            eulerPopup.style.opacity = '1';
-        }, 200);
+    if (eulerCount == 9) {
+        eulerPopup.style.display = 'block';
         setTimeout(function(){
             eulerPopup.style.opacity = '0';
-        }, 3800);
+        }, 7000);
         setTimeout(function(){
-            eulerPopup.style = 'display: none';
-        }, 4000);
+            eulerPopup.style.display = 'none';
+        }, 7400);
     }
     eulerCount++;
 }
