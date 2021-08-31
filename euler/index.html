@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>Euler</title>
-    <link rel="stylesheet" href="euler_style.css">
-    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
+    <link rel="stylesheet" href="euler.css">
+    <link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
@@ -12,11 +12,16 @@
       <div class="heading">
         <div>
           <img class='euler-icon' src='euler-face.jpg'/>
-          <span id="euler-popup"><b>Well done!</b><br>You've clicked Euler 10 times!<br><span style="font-size: 12px">(It's actually pronouced Oi-LER instead of Yu-LER so this whole thing doesn't make sense)</span></span>
+          <span id="euler-popup">
+            <b>Well done!</b><br>
+            You've clicked Euler 10 times!<br>
+            <span style="font-size: 12px">(It's actually pronouced Oi-LER instead of Yu-LER so this whole thing doesn't make sense)</span>
+            <a onclick="setOiler()">Oi-LER</a>
+          </span>
         </div>
         <div>
           <h1 id="euler-title" class="cursorPointerText" onclick="changeEuler()">Euler the Ruler!</h1>
-          <h3>An Eulerian graph tool</h3>
+          <h3>An Eulerian Graph Tool</h3>
         </div>
       </div>
 
@@ -61,7 +66,16 @@
 
       <div id="result_div"> &nbsp;</div>
       <div id="cy"></div>
-        
+
+      <div class="footer">
+        <div>
+          Source: <a target="_blank" href="https://github.com/aannoo/aannoo.github.io/tree/master/euler">GitHub</a>
+        </div>
+        <div>
+          Visulizer library: <a target="_blank" href="https://github.com/cytoscape/cytoscape.js">cytoscape.js</a> | 
+          <a target="_blank" href="https://raw.githubusercontent.com/cytoscape/cytoscape.js/master/LICENSE">License</a>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.19.1/cytoscape.min.js" integrity="sha512-REr7ZKldLo2Lx6UiQ6autPWZR+j4u1/7ElYsrcwFe3ZmT/TKXCF/vXqNP/d2BQ78k0tapdZFccpFkku9bwrS3w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
