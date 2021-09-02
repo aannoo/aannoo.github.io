@@ -16,7 +16,7 @@
             <b>Well done!</b><br>
             You've clicked Euler 10 times!<br>
             <span style="font-size: 12px">(It's actually pronouced Oi-LER instead of Yu-LER so this whole thing doesn't make sense)</span>
-            <div class="oilerBtn cursorPointerText" onclick="setOiler()">Oi-LER</div>
+            <div class="oilerBtn cursorPointerText" onmouseup="setOiler()">Oi-LER</div>
           </span>
         </div>
         <div>
@@ -26,7 +26,7 @@
       </div>
 
       <div id="info-container">
-        <div id="info-arrow" class="cursorPointerText"><div id="arrow"></div><span id="info-arrow-text">What is this nonsense about Euler?...</span></div>
+        <div id="info-arrow" class="cursorPointerText"><div id="arrow"></div><span id="info-arrow-text">What is this Euler nonsense?</span></div>
         <div id="info" style="max-height: 0px">
           <p>
             In graph theory, an <a href="https://en.wikipedia.org/wiki/Eulerian_path" target="_blank">Euler Path</a> is a path that goes through every edge of a graph exactly once.<br>
@@ -51,7 +51,7 @@
 
       <div class="inputDiv">
         <!-- <label for="edges">Edges:</label> -->
-        <textarea rows="1" type="text" id="edges" name="edges" placeholder="Input edges here...">[b,f],[c,d],[c,e],[f,e],[b,d]</textarea>
+        <textarea spellcheck="false" rows="1" type="text" id="edges" name="edges" placeholder="Input edges here...">[b,f],[c,d],[c,e],[f,e],[b,d]</textarea>
         <!-- <label for="excluded_chars">Excluded Characters:</label> -->
         <!-- <input type="text" id="excluded_chars" name="excluded_chars" value='"[", "]", ","'><br><br> -->
         <div id="directedDiv">
@@ -64,7 +64,15 @@
         <div class="btn cursorPointerText" id='btn' onclick="calculateBtn()">Calculate</div>
       </div>
 
-      <div id="result_div"> &nbsp;</div>
+      <div id="result_div">
+        <div id="result_div-heading" onclick="showResultInfo()">
+          &nbsp;
+        </div>
+        <span id="result-more-info">
+        </span>
+
+      
+      </div>
       <div id="cy"></div>
 
       <div class="footer">
