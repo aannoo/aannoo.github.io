@@ -45,13 +45,19 @@ function initCy(isDirected) {
 }
 
 
-
+var odd = 0;
+var uniqueVertexCount = 0;
+var nodesWithOddDegree = [];
+var edgeCount = 0
 function calculateEuler(edges, excluded_chars) {
-    //object to store the count for each character in the edges string
+    //object to store edge count for each character in the edges string
     var counts = {};
     //variables
     var ch, index, len, count, result;
-    var vertexCount = 0;
+    edgeCount = 0;
+    odd = 0;
+    vertexCount = 0;
+    nodesWithOddDegree = [];
 
     if (edges == null) {
         return "Undefined";
@@ -62,41 +68,46 @@ function calculateEuler(edges, excluded_chars) {
         ch = edges.charAt(index);
         let excluded = false;
         // check if character is excluded
-        excluded_chars.forEach(excluded_char => {
-            if (ch == excluded_char) {
-                excluded = true;
-            }
-        });
+        if (excluded_chars != null) {
+            excluded_chars.forEach(excluded_char => {
+                if (ch == excluded_char) {
+                    excluded = true;
+                }
+            });
+        }
         // increase count of vertex
         if (!excluded) {
             count = counts[ch];
             counts[ch] = count ? count + 1 : 1;
-            vertexCount++;
+            edgeCount++;
         }
     }
     
-    // count the number of vertices with an odd degree of edges
-    var odd = 0;
-    var uniqueVertexCount = 0;
+    // count the number of vertices with an odd degree
     for (ch in counts) {
-        if (counts[ch] % 2 == 1) { odd++; }
-        uniqueVertexCount++;
+        if (counts[ch] % 2 == 1) {
+            odd++;
+            if(nodesWithOddDegree.indexOf(ch) === -1) {
+                nodesWithOddDegree.push(ch);
+            }
+        }
+        vertexCount++;
     }
-    if (uniqueVertexCount == 0) {
+    if (vertexCount == 0) {
         return "Invalid - no verticies";
     }
     console.log(vertexCount)
-    if (uniqueVertexCount == 1 && vertexCount == 2) {
-        return "Euler Path and Euler Circuit - Self Loop"
+    if (vertexCount == 1 && edgeCount == 2) {
+        return "Euler Circuit (and Path) - Self Loop"
     }
-    if (vertexCount == 1) {
+    if (edgeCount == 1) {
         return "Invalid - Edge not defined"
     }
     if (odd <= 2) {
         result = "Euler Path";
     }
     if (odd == 0) {
-        result = "Euler Path and Euler Circuit";
+        result = "Euler Circuit (and Path)";
     }
     if (result == null) {
         result = "No Euler Path in this Graph";
@@ -104,9 +115,10 @@ function calculateEuler(edges, excluded_chars) {
     return result;
 }
 
-
+// calculate button
 function calculateBtn() {
     document.getElementById("btn").style.pointerEvents = 'none';
+    // showResultInfo(true);
 
     // initilise and reset cy
     var isDirected = document.getElementById('directed-checkbox').checked;
@@ -129,6 +141,8 @@ function calculateBtn() {
     result_div = document.getElementById("result_div");
     result_div.style.opacity = '1';
     result_div.style.margin = '15px 0 10px';
+    // result_div.style.maxHeight = '100px';
+    // document.getElementById('result_div-heading').maxHeight = "100px"
 
     // start calculation
     var calculation = calculateEuler(edges, excluded_chars);
@@ -152,9 +166,8 @@ function calculateBtn() {
                 { group: 'nodes', data: { id: node2 }, position: { x: -50, y: -50 } },
                 { group: 'edges', data: { id: 'e'+edgeCount , source: node1, target: node2 } },
             ])
+            edgeCount++;
         }
-
-        edgeCount++;
     }
 
     // start cy
@@ -173,14 +186,16 @@ function calculateBtn() {
     var layout = cy.layout({ name: layout });
     layout.run(); 
 
+    var visitedNodes = 0;
     if (!calculation.includes('Invalid')) {
 
         //check if graph is connected with a BFS from a node
-        var visitedNodes = 0;
+        visitedNodesString = '';
         var bfs = cy.elements().bfs({
             roots: cy.nodes()[0],
             visit: function(v, e, u, i, depth){
                 console.log( 'visit ' + v.id() );
+                visitedNodesString = visitedNodesString + v.id() + " > ";
                 visitedNodes++;
             },
             directed: isDirected
@@ -195,12 +210,31 @@ function calculateBtn() {
 
     }
 
+    var moreInfo = '<br>';
+    if (visitedNodes != 0) {
+        moreInfo += 'Nodes visited in BFS (root is initial node): ' + visitedNodesString.substring(0, visitedNodesString.length - 2)
+        + '<br>BFS visited nodes count: ' + visitedNodes + '<br>';
+    }
+    moreInfo += 'Edge count: ' + edgeCount + '<br>';
+    moreInfo += 'Node count: ' + vertexCount + '<br>';
+    if (vertexCount > 1) {
+        moreInfo += 'Nodes with odd degree count : ' + nodesWithOddDegree.length + '<br>';
+        if (nodesWithOddDegree.length != 0) {
+            moreInfo += 'Nodes with odd degree: ' + nodesWithOddDegree + '<br>';
+            moreInfo += 'Total odd degree count for all nodes: ' + odd + '<br>';
+        }
+    }
+
+    document.getElementById("result-more-info").innerHTML = moreInfo;
     // display result
-    resultClass = 'validResult'
+    resultClass = 'validResult';
     if (calculation.includes('Invalid')) {
         resultClass = 'invalidResult';
     }
-    result_div.innerHTML = '<b>Result: </b>' + calculation;
+    else if (calculation.includes("No Euler Path in this Graph")) {
+        resultClass = 'noResult';
+    }
+    document.getElementById("result_div-heading").innerHTML = '<b>Result: </b>' + calculation;
     result_div.classList.add(resultClass);
     setTimeout(function(){
         result_div.classList.remove(resultClass);
@@ -208,6 +242,20 @@ function calculateBtn() {
 
     document.getElementById("btn").style.pointerEvents = 'auto';
 }
+
+var moreInfoMaxHeight = "1px";
+function showResultInfo(collapse = false) {
+    resultInfo = document.getElementById("result-more-info");
+    if (resultInfo != null) {
+        if (resultInfo.style.maxHeight == '400px' || collapse) {
+            resultInfo.style.maxHeight = "1px";
+        } else {
+            resultInfo.style.maxHeight = "400px";
+            var height = resultInfo.offsetHeight;
+        }
+    }
+}
+
 
 // pressing enter on input textbox
 document.getElementById("edges")
@@ -235,12 +283,12 @@ document.getElementById('directedDiv').addEventListener("click", function() {
     if (checkbox.checked) {
         checkbox.checked = false;
         this.style.backgroundColor = '#1a3b5c';
-        this.style.borderColor = 'rgb(85, 85, 85)'
+        this.style.borderColor = 'rgb(78, 78, 78)'
         text.innerHTML = 'Undirected';
     } else {
         checkbox.checked = true;
         this.style.backgroundColor = '#306ca8';
-        this.style.borderColor = 'rgb(200, 200, 200)'
+        this.style.borderColor = 'rgb(140, 140, 140)'
         text.innerHTML = 'Directed';
     }
 });
@@ -273,7 +321,7 @@ var oiler = false;
 function setOiler() {
     oiler = true;
     document.getElementById('euler-title').innerHTML = oilers[0];
-    document.getElementById('euler-popup').style.display = 'none';
+    eulerPopup.style.display = 'none';
 }
 const eulers = [
     'Euler the Ruler!', 
