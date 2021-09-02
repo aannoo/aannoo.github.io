@@ -232,7 +232,7 @@ a {
 #result_div {
     font-size: 17px;
     opacity:0;
-    transition: opacity 0.2s, margin 0.2s, border-color 0.2s max-height 0.2s;
+    transition: opacity 0.2s, margin 0.2s, border-color 0.2s, max-height 0.2s;
     background-color: rgba(0, 0, 0, 0.3);
     border: 1px solid rgb(155, 155, 155);
     border-radius: 2px;
