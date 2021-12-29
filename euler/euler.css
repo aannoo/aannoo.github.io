@@ -10,7 +10,7 @@ html {
 html:before {
     content: '';
     position: fixed;
-    background:linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5)), url(euler120.jpeg);
+    background:linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7)), url(euler120.jpeg);
     background-repeat: repeat;
     top: 0;
     left: 0;
@@ -240,17 +240,35 @@ a {
     padding: 5px 10px;
     overflow: hidden;
 }
-#result_div-heading {
+#result_div-container {
     cursor: pointer;
     padding: 5px 10px;
     margin: -5px -10px;
     transition: max-height 0.2s;
 }
-#result_div-heading:hover {
+#result_div-container:hover {
     background-color: rgba(255, 255, 255, 0.03);
 }
-#result_div-heading:active {
+#result_div-container:active {
     background-color: rgba(0, 0, 0, 0.15);
+}
+.why-btn {
+    background-color: rgba(67, 67, 67, 0.372);
+    color: rgb(130, 130, 130);
+    /* min-width: 50px; */
+    border-radius: 3px;
+    padding:0 10px;
+    opacity: 0;
+    transition: opacity 0.05s;
+    /* font-size: 16px; */
+    /* font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; */
+}
+#result_div-container:hover .why-btn {
+    /* background-color: black; */
+    opacity: 1;
+}
+#result_div-container:active .why-btn {
+    background-color: rgb(38, 38, 38);
 }
 .invalidResult {
     border-color: red !important;
@@ -435,5 +453,8 @@ ol {
     }
     #result_div {
         font-size: 14px;
+    }
+    .why-btn {
+        display: none;
     }
 }

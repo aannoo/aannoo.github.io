@@ -135,14 +135,11 @@ function calculateBtn() {
     console.log('edges before: ' + edges)
     edges = edges.replace(/\r?\n|\r/g, '').trim();
     console.log('edges after: ' + edges)
-    // let excluded_chars = document.getElementById("excluded_chars").value;
     let excluded_chars = ["[", "]", ",", "{", "}", "(", ")", " "];
 
     result_div = document.getElementById("result_div");
     result_div.style.opacity = '1';
     result_div.style.margin = '15px 0 10px';
-    // result_div.style.maxHeight = '100px';
-    // document.getElementById('result_div-heading').maxHeight = "100px"
 
     // start calculation
     var calculation = calculateEuler(edges, excluded_chars);
@@ -187,21 +184,33 @@ function calculateBtn() {
     layout.run(); 
 
     var visitedNodes = 0;
+    var visitedNodesInPath = 0;
+    var nodesInTheGraph = cy.elements('node');
+
     if (!calculation.includes('Invalid')) {
 
-        //check if graph is connected with a BFS from a node
+        //check if graph is connected with a BFS from all nodes
         visitedNodesString = '';
-        var bfs = cy.elements().bfs({
-            roots: cy.nodes()[0],
-            visit: function(v, e, u, i, depth){
-                console.log( 'visit ' + v.id() );
-                visitedNodesString = visitedNodesString + v.id() + " > ";
-                visitedNodes++;
-            },
-            directed: isDirected
-        });
-
-        var nodesInTheGraph = cy.elements('node');
+        for (index=0;index<nodesInTheGraph.length;index++) {
+            visitedNodesInPath = 0;
+            var bfs = cy.elements().bfs({
+                roots: nodesInTheGraph[index],
+                visit: function(v, e, u, i, depth){
+                    console.log( 'visit ' + v.id() );
+                    visitedNodesInPath++;
+                    console.log('i' + index)
+                    console.log('id  ' + nodesInTheGraph[index].id())
+                    console.log('nodes in graph ' + nodesInTheGraph.length);
+                    console.log('visited nodes in path: ' + visitedNodesInPath)
+                    if (visitedNodesInPath == nodesInTheGraph.length) {
+                        visitedNodes++;
+                        visitedNodesString = visitedNodesString + nodesInTheGraph[index].id() + ", ";
+                        visitedNodesInPath = 0;
+                    }
+                },
+                directed: isDirected
+            });
+        }
 
         console.log(calculation);
         if (nodesInTheGraph.length != visitedNodes) {
@@ -211,9 +220,17 @@ function calculateBtn() {
     }
 
     var moreInfo = '<br>';
+
+    // if (nodesWithOddDegree <= 2) {
+    //     var condition1 = true;
+    // } else {
+    //     var condition1 = false;
+    // }
+    // moreInfo += '<b>1. Two or less verticies with an odd degree: ' + condition1 + '</b><br>';
+
     if (visitedNodes != 0) {
-        moreInfo += 'Nodes visited in BFS (root is initial node): ' + visitedNodesString.substring(0, visitedNodesString.length - 2)
-        + '<br>BFS visited nodes count: ' + visitedNodes + '<br>';
+        moreInfo += 'Nodes which have a path to all other nodes (BFS): ' + visitedNodesString.substring(0, visitedNodesString.length - 2)
+        + '<br>Nodes which have a path to all other nodes (BFS) count: ' + visitedNodes + '<br>';
     }
     moreInfo += 'Edge count: ' + edgeCount + '<br>';
     moreInfo += 'Node count: ' + vertexCount + '<br>';
@@ -234,7 +251,7 @@ function calculateBtn() {
     else if (calculation.includes("No Euler Path in this Graph")) {
         resultClass = 'noResult';
     }
-    document.getElementById("result_div-heading").innerHTML = '<b>Result: </b>' + calculation;
+    document.getElementById("result_div-text").innerHTML = '<b>Result: </b>' + calculation;
     result_div.classList.add(resultClass);
     setTimeout(function(){
         result_div.classList.remove(resultClass);
