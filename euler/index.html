@@ -34,7 +34,7 @@
           </p>
 
           <p style='margin-bottom: 5px'>
-            Euler’s Theorem:
+            Euler's Theorem:
           </p>
           <ol>
             <li>If a graph has more than 2 vertices of odd degree then it has no Euler paths</li>
@@ -47,13 +47,9 @@
       </div>
 
       <p class="input-directions">Input edges in this format: <strong>[b,f],[c,d],[c,e],[f,e],[b,d]</strong> (one character per vertex)</p>
-      <!-- <p> Input Exluded chars in format: <strong>["[", "]", ","]</p> -->
 
       <div class="inputDiv">
-        <!-- <label for="edges">Edges:</label> -->
         <textarea spellcheck="false" rows="1" type="text" id="edges" name="edges" placeholder="Input edges here...">[b,f],[c,d],[c,e],[f,e],[b,d]</textarea>
-        <!-- <label for="excluded_chars">Excluded Characters:</label> -->
-        <!-- <input type="text" id="excluded_chars" name="excluded_chars" value='"[", "]", ","'><br><br> -->
         <div id="directedDiv">
           <span id="directedDiv-text" class="cursorPointerText">Undirected</span>
         <label class="switch">
@@ -65,14 +61,16 @@
       </div>
 
       <div id="result_div">
-        <div id="result_div-heading" onclick="showResultInfo()">
+        <div id="result_div-container" onclick="showResultInfo()" style="display:flex;justify-content: space-between;">
+          <div id="result_div-text"></div>
           &nbsp;
+          <div class="why-btn">Why?</div>
         </div>
+
         <span id="result-more-info">
         </span>
-
-      
       </div>
+
       <div id="cy"></div>
 
       <div class="footer">
